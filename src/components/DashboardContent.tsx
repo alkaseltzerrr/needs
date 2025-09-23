@@ -76,10 +76,10 @@ export default function DashboardContent({ profile, groups }: DashboardContentPr
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-2xl font-display font-semibold text-gray-800">
+                <h2 className="text-2xl font-pixel font-semibold text-gray-800">
                   Welcome back, {profile?.display_name}! 👋
                 </h2>
-                <p className="text-gray-600 mt-2 font-cute">{cuteMessage}</p>
+                <p className="text-gray-600 mt-2 text-sm">{cuteMessage}</p>
               </div>
               <NeedinessIndicator level={profile?.neediness_level || 0} />
             </div>
@@ -90,8 +90,8 @@ export default function DashboardContent({ profile, groups }: DashboardContentPr
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">{needinessLevel.emoji}</span>
                   <div>
-                    <p className="text-sm text-gray-600 font-cute">Current Mood</p>
-                    <p className="font-display font-semibold text-gray-800">{needinessLevel.label}</p>
+                    <p className="text-sm text-gray-600 text-sm">Current Mood</p>
+                    <p className="font-pixel font-semibold text-gray-800">{needinessLevel.label}</p>
                   </div>
                 </div>
               </div>
@@ -100,8 +100,8 @@ export default function DashboardContent({ profile, groups }: DashboardContentPr
                 <div className="flex items-center gap-3">
                   <Users className="w-8 h-8 text-secondary-600" />
                   <div>
-                    <p className="text-sm text-gray-600 font-cute">Groups</p>
-                    <p className="font-display font-semibold text-gray-800">{groups.length}</p>
+                    <p className="text-sm text-gray-600 text-sm">Groups</p>
+                    <p className="font-pixel font-semibold text-gray-800">{groups.length}</p>
                   </div>
                 </div>
               </div>
@@ -110,8 +110,8 @@ export default function DashboardContent({ profile, groups }: DashboardContentPr
                 <div className="flex items-center gap-3">
                   <Heart className="w-8 h-8 text-accent-600" />
                   <div>
-                    <p className="text-sm text-gray-600 font-cute">Needs Helped</p>
-                    <p className="font-display font-semibold text-gray-800">0</p>
+                    <p className="text-sm text-gray-600 text-sm">Needs Helped</p>
+                    <p className="font-pixel font-semibold text-gray-800">0</p>
                   </div>
                 </div>
               </div>
@@ -122,12 +122,12 @@ export default function DashboardContent({ profile, groups }: DashboardContentPr
         {/* Groups Section */}
         <div>
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-display font-semibold text-gray-800">Your Groups</h3>
+            <h3 className="text-xl font-pixel font-semibold text-gray-800">Your Groups</h3>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowCreateGroup(true)}
-              className="flex items-center gap-2 bg-primary-500 text-white px-4 py-2 rounded-xl font-cute hover:bg-primary-600 transition-colors shadow-lg"
+              className="flex items-center gap-2 bg-primary-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-primary-600 transition-colors shadow-lg"
             >
               <Plus className="w-5 h-5" />
               Create Group
@@ -142,17 +142,17 @@ export default function DashboardContent({ profile, groups }: DashboardContentPr
             >
               <div className="max-w-md mx-auto">
                 <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h4 className="text-lg font-display font-medium text-gray-700 mb-2">
+                <h4 className="text-lg font-pixel font-medium text-gray-700 mb-2">
                   No groups yet!
                 </h4>
-                <p className="text-gray-500 font-cute mb-6">
+                <p className="text-gray-500 text-sm mb-6">
                   Create or join a group to start sharing your needs with people who care.
                 </p>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setShowCreateGroup(true)}
-                  className="bg-gradient-to-r from-primary-400 to-primary-500 text-white px-6 py-3 rounded-xl font-display font-medium shadow-lg"
+                  className="bg-gradient-to-r from-primary-400 to-primary-500 text-white px-6 py-3 rounded-xl font-pixel font-medium shadow-lg"
                 >
                   Create Your First Group
                 </motion.button>

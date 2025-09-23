@@ -50,9 +50,9 @@ export default function GroupNeedsBoard({
   const fulfilledNeeds = filteredNeeds.filter(n => n.is_fulfilled)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-40">
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
@@ -65,17 +65,16 @@ export default function GroupNeedsBoard({
               
               <div className="flex items-center gap-3">
                 <div 
-                  className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-                  style={{ backgroundColor: group.color + '20' }}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center text-xl bg-primary-100 text-primary-700"
                 >
                   {group.icon}
                 </div>
                 <div>
-                  <h1 className="font-display font-semibold text-lg text-gray-800">
+                  <h1 className="font-pixel text-lg text-gray-800">
                     {group.name}
                   </h1>
                   {group.description && (
-                    <p className="text-xs text-gray-500 font-cute">{group.description}</p>
+                    <p className="text-xs text-gray-500">{group.description}</p>
                   )}
                 </div>
               </div>
@@ -86,7 +85,7 @@ export default function GroupNeedsBoard({
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowMembers(true)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg font-cute text-sm hover:bg-gray-200 transition-colors"
+                className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-sm hover:bg-gray-200 transition-colors"
               >
                 <Users className="w-4 h-4" />
                 {members.length} members
@@ -96,14 +95,14 @@ export default function GroupNeedsBoard({
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowCreateNeed(true)}
-                className="flex items-center gap-2 bg-primary-500 text-white px-4 py-2 rounded-xl font-cute hover:bg-primary-600 transition-colors shadow-lg"
+                className="flex items-center gap-2 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-sm"
               >
                 <Plus className="w-5 h-5" />
                 Add Need
               </motion.button>
               
               {currentUserRole === 'admin' && (
-                <span className="text-xs text-gray-500 font-cute">Admin</span>
+                <span className="text-xs text-gray-500">Admin</span>
               )}
             </div>
           </div>
@@ -112,10 +111,10 @@ export default function GroupNeedsBoard({
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Filters */}
-        <div className="bg-white rounded-2xl shadow-lg p-4 mb-6 border border-gray-100">
+        <div className="bg-white rounded-lg shadow-sm p-4 mb-6 border border-gray-200">
           <div className="flex items-center gap-2 mb-3">
             <Filter className="w-4 h-4 text-gray-500" />
-            <span className="text-sm font-display font-medium text-gray-700">Filters</span>
+            <span className="text-sm font-medium text-gray-700">Filters</span>
           </div>
           
           <div className="flex flex-wrap gap-2">
@@ -123,7 +122,7 @@ export default function GroupNeedsBoard({
             <select
               value={filterCategory || ''}
               onChange={(e) => setFilterCategory(e.target.value || null)}
-              className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm font-cute focus:border-primary-400 focus:outline-none"
+              className="px-3 py-1.5 rounded-lg border border-gray-300 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none"
             >
               <option value="">All Categories</option>
               {Object.entries(NEED_CATEGORIES).map(([key, value]) => (
@@ -137,7 +136,7 @@ export default function GroupNeedsBoard({
             <select
               value={filterPriority || ''}
               onChange={(e) => setFilterPriority(e.target.value || null)}
-              className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm font-cute focus:border-primary-400 focus:outline-none"
+              className="px-3 py-1.5 rounded-lg border border-gray-300 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none"
             >
               <option value="">All Priorities</option>
               {Object.entries(NEED_PRIORITIES).map(([key, value]) => (
@@ -151,7 +150,7 @@ export default function GroupNeedsBoard({
             <select
               value={filterFulfilled === null ? '' : filterFulfilled.toString()}
               onChange={(e) => setFilterFulfilled(e.target.value === '' ? null : e.target.value === 'true')}
-              className="px-3 py-1.5 rounded-lg border border-gray-200 text-sm font-cute focus:border-primary-400 focus:outline-none"
+              className="px-3 py-1.5 rounded-lg border border-gray-300 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:outline-none"
             >
               <option value="">All Status</option>
               <option value="false">Active</option>
@@ -166,7 +165,7 @@ export default function GroupNeedsBoard({
                   setFilterPriority(null)
                   setFilterFulfilled(null)
                 }}
-                className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-cute hover:bg-gray-200 transition-colors"
+                className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200 transition-colors"
               >
                 Clear
               </button>
@@ -176,9 +175,9 @@ export default function GroupNeedsBoard({
 
         {/* Active Needs */}
         <div className="mb-8">
-          <h2 className="text-xl font-display font-semibold text-gray-800 mb-4 flex items-center gap-2">
+          <h2 className="text-xl font-pixel text-gray-800 mb-4 flex items-center gap-2">
             <span>Active Needs</span>
-            <span className="bg-primary-100 text-primary-700 px-2 py-0.5 rounded-lg text-sm font-cute">
+            <span className="bg-primary-100 text-primary-700 px-2 py-0.5 rounded-lg text-sm">
               {activeNeeds.length}
             </span>
           </h2>
@@ -187,9 +186,9 @@ export default function GroupNeedsBoard({
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="bg-white rounded-2xl shadow-lg p-8 text-center border border-gray-100"
+              className="bg-white rounded-lg shadow-sm p-8 text-center border border-gray-200"
             >
-              <p className="text-gray-500 font-cute">No active needs at the moment 🌟</p>
+              <p className="text-gray-500">No active needs at the moment 🌟</p>
             </motion.div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -207,9 +206,9 @@ export default function GroupNeedsBoard({
         {/* Fulfilled Needs */}
         {fulfilledNeeds.length > 0 && (
           <div>
-            <h2 className="text-xl font-display font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-pixel text-gray-800 mb-4 flex items-center gap-2">
               <span>Fulfilled Needs</span>
-              <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-lg text-sm font-cute">
+              <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-lg text-sm">
                 {fulfilledNeeds.length}
               </span>
             </h2>
