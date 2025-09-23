@@ -38,7 +38,7 @@ export default function SignupPage() {
 
       if (data.user) {
         // Create profile
-        const { error: profileError } = await supabase
+        const { error: profileError } = await (supabase as any)
           .from('profiles')
           .insert({
             id: data.user.id,
@@ -53,8 +53,8 @@ export default function SignupPage() {
         router.push('/dashboard')
         router.refresh()
       }
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setLoading(false)
     }

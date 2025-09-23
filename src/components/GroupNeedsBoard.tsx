@@ -101,6 +101,10 @@ export default function GroupNeedsBoard({
                 <Plus className="w-5 h-5" />
                 Add Need
               </motion.button>
+              
+              {currentUserRole === 'admin' && (
+                <span className="text-xs text-gray-500 font-cute">Admin</span>
+              )}
             </div>
           </div>
         </div>
@@ -194,7 +198,6 @@ export default function GroupNeedsBoard({
                   key={need.id}
                   need={need}
                   currentUserId={currentUserId}
-                  groupId={group.id}
                 />
               ))}
             </div>
@@ -217,7 +220,6 @@ export default function GroupNeedsBoard({
                   key={need.id}
                   need={need}
                   currentUserId={currentUserId}
-                  groupId={group.id}
                 />
               ))}
             </div>
@@ -236,8 +238,6 @@ export default function GroupNeedsBoard({
       {showMembers && (
         <MembersModal
           members={members}
-          groupId={group.id}
-          currentUserRole={currentUserRole}
           onClose={() => setShowMembers(false)}
         />
       )}

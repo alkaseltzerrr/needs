@@ -39,7 +39,7 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
       if (!user) throw new Error('Not authenticated')
 
       // Create the group
-      const { data: group, error: groupError } = await supabase
+      const { data: group, error: groupError } = await (supabase as any)
         .from('groups')
         .insert({
           name,
@@ -54,10 +54,10 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
       if (groupError) throw groupError
 
       // Add the creator as an admin member
-      const { error: memberError } = await supabase
+      const { error: memberError } = await (supabase as any)
         .from('group_members')
         .insert({
-          group_id: group.id,
+          group_id: (group as any).id,
           user_id: user.id,
           role: 'admin'
         })
@@ -66,8 +66,8 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
 
       router.refresh()
       onClose()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
     }

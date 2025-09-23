@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, Crown, User } from 'lucide-react'
+import { X, Crown } from 'lucide-react'
 import type { Profile } from '@/lib/supabase/database.types'
 import NeedinessIndicator from './NeedinessIndicator'
 
@@ -10,15 +10,11 @@ interface MembersModalProps {
     role: string
     profiles: Profile | null
   }>
-  groupId: string
-  currentUserRole: 'admin' | 'member'
   onClose: () => void
 }
 
 export default function MembersModal({ 
   members, 
-  groupId, 
-  currentUserRole, 
   onClose 
 }: MembersModalProps) {
   return (

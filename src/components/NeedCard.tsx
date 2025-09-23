@@ -14,10 +14,9 @@ interface NeedCardProps {
     need_responses: NeedResponse[]
   }
   currentUserId: string
-  groupId: string
 }
 
-export default function NeedCard({ need, currentUserId, groupId }: NeedCardProps) {
+export default function NeedCard({ need, currentUserId }: NeedCardProps) {
   const [isHelping, setIsHelping] = useState(false)
   const [showResponses, setShowResponses] = useState(false)
   const [responseMessage, setResponseMessage] = useState('')
@@ -32,7 +31,7 @@ export default function NeedCard({ need, currentUserId, groupId }: NeedCardProps
     setIsHelping(true)
     try {
       // Add response
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('need_responses')
         .insert({
           need_id: need.id,
@@ -44,14 +43,14 @@ export default function NeedCard({ need, currentUserId, groupId }: NeedCardProps
       if (error) throw error
 
       // Update neediness level of need creator (decrease by 5)
-      await supabase.rpc('update_neediness_level', {
+      await (supabase as any).rpc('update_neediness_level', {
         p_user_id: need.created_by,
         p_delta: -5,
         p_reason: `Help received for: ${need.title}`
       })
 
       // Increase helper's neediness by 2 (helping others makes you a bit needier for reciprocation)
-      await supabase.rpc('update_neediness_level', {
+      await (supabase as any).rpc('update_neediness_level', {
         p_user_id: currentUserId,
         p_delta: 2,
         p_reason: `Helped with: ${need.title}`
@@ -68,7 +67,7 @@ export default function NeedCard({ need, currentUserId, groupId }: NeedCardProps
 
   const handleFulfill = async () => {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('needs')
         .update({
           is_fulfilled: true,
@@ -217,7 +216,7 @@ export default function NeedCard({ need, currentUserId, groupId }: NeedCardProps
             </div>
           ) : (
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500 font-cute">You've responded to this need</span>
+              <span className="text-sm text-gray-500 font-cute">You&apos;ve responded to this need</span>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}

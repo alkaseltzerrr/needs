@@ -35,7 +35,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
       if (!user) throw new Error('Not authenticated')
 
       // Create the need
-      const { error: needError } = await supabase
+      const { error: needError } = await (supabase as any)
         .from('needs')
         .insert({
           group_id: groupId,
@@ -57,7 +57,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
         urgent: 12
       }[priority]
 
-      await supabase.rpc('update_neediness_level', {
+      await (supabase as any).rpc('update_neediness_level', {
         p_user_id: user.id,
         p_delta: needinessIncrease,
         p_reason: `Posted need: ${title}`
@@ -65,8 +65,8 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
 
       router.refresh()
       onClose()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
