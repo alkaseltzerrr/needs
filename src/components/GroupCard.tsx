@@ -31,7 +31,7 @@ export default function GroupCard({ group, role }: GroupCardProps) {
               {group.icon}
             </div>
             {role === 'admin' && (
-              <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-lg text-xs font-cute flex items-center gap-1">
+              <span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-lg text-xs text-sm flex items-center gap-1">
                 <Crown className="w-3 h-3" />
                 Admin
               </span>
@@ -39,12 +39,12 @@ export default function GroupCard({ group, role }: GroupCardProps) {
           </div>
 
           {/* Content */}
-          <h3 className="font-display font-semibold text-lg text-gray-800 mb-2">
+          <h3 className="font-pixel font-semibold text-lg text-gray-800 mb-2">
             {group.name}
           </h3>
           
           {group.description && (
-            <p className="text-sm text-gray-600 font-cute mb-4 line-clamp-2">
+            <p className="text-sm text-gray-600 text-sm mb-4 line-clamp-2">
               {group.description}
             </p>
           )}
@@ -53,11 +53,11 @@ export default function GroupCard({ group, role }: GroupCardProps) {
           <div className="flex items-center justify-between text-xs text-gray-500">
             <div className="flex items-center gap-1">
               <Calendar className="w-3 h-3" />
-              <span className="font-cute">{formatDate(group.created_at)}</span>
+              <span className="text-sm">{formatDate(group.created_at)}</span>
             </div>
             <div className="flex items-center gap-1">
               <Users className="w-3 h-3" />
-              <span className="font-cute">View needs</span>
+              <span className="text-sm">View needs</span>
             </div>
           </div>
         </div>

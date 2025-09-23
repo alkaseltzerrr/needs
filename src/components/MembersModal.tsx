@@ -35,7 +35,7 @@ export default function MembersModal({
         >
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-display font-semibold text-gray-800">
+            <h2 className="text-2xl font-pixel font-semibold text-gray-800">
               Group Members
             </h2>
             <button
@@ -57,23 +57,23 @@ export default function MembersModal({
                   className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full flex items-center justify-center text-white font-display font-semibold">
+                    <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full flex items-center justify-center text-white font-pixel font-semibold">
                       {member.profiles.display_name.charAt(0).toUpperCase()}
                     </div>
                     
                     <div>
                       <div className="flex items-center gap-2">
-                        <h3 className="font-display font-medium text-gray-800">
+                        <h3 className="font-pixel font-medium text-gray-800">
                           {member.profiles.display_name}
                         </h3>
                         {member.role === 'admin' && (
-                          <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-lg text-xs font-cute flex items-center gap-1">
+                          <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-lg text-xs text-sm flex items-center gap-1">
                             <Crown className="w-3 h-3" />
                             Admin
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-gray-500 font-cute">
+                      <p className="text-sm text-gray-500 text-sm">
                         @{member.profiles.username}
                       </p>
                     </div>
@@ -93,7 +93,7 @@ export default function MembersModal({
 
           {/* Footer */}
           <div className="mt-6 pt-4 border-t text-center">
-            <p className="text-sm text-gray-500 font-cute">
+            <p className="text-sm text-gray-500 text-sm">
               {members.length} member{members.length !== 1 ? 's' : ''} in this group
             </p>
           </div>

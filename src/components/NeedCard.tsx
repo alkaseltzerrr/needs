@@ -102,22 +102,22 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
             {category.icon}
           </div>
           <div>
-            <h3 className="font-display font-semibold text-lg text-gray-800">
+            <h3 className="font-pixel font-semibold text-lg text-gray-800">
               {need.title}
             </h3>
             <div className="flex items-center gap-2 text-sm">
-              <span className="text-gray-500 font-cute">by {need.profiles?.display_name}</span>
+              <span className="text-gray-500 text-sm">by {need.profiles?.display_name}</span>
               <span className="text-xl">{needinessLevel.emoji}</span>
             </div>
           </div>
         </div>
         
         <div className="flex flex-col items-end gap-1">
-          <span className={`px-2 py-1 rounded-lg text-xs font-cute ${priority.color}`}>
+          <span className={`px-2 py-1 rounded-lg text-xs text-sm ${priority.color}`}>
             {priority.icon} {priority.label}
           </span>
           {need.is_fulfilled && (
-            <span className="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs font-cute flex items-center gap-1">
+            <span className="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs text-sm flex items-center gap-1">
               <CheckCircle className="w-3 h-3" />
               Fulfilled
             </span>
@@ -127,12 +127,12 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
 
       {/* Description */}
       {need.description && (
-        <p className="text-gray-600 font-cute mb-4">{need.description}</p>
+        <p className="text-gray-600 text-sm mb-4">{need.description}</p>
       )}
 
       {/* Due Date */}
       {need.due_date && (
-        <div className="flex items-center gap-2 text-sm text-gray-500 font-cute mb-4">
+        <div className="flex items-center gap-2 text-sm text-gray-500 text-sm mb-4">
           <Clock className="w-4 h-4" />
           <span>Due: {formatDate(need.due_date)}</span>
         </div>
@@ -143,7 +143,7 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
         <div className="mb-4">
           <button
             onClick={() => setShowResponses(!showResponses)}
-            className="flex items-center gap-2 text-sm text-gray-600 font-cute hover:text-gray-800 transition-colors"
+            className="flex items-center gap-2 text-sm text-gray-600 text-sm hover:text-gray-800 transition-colors"
           >
             <MessageCircle className="w-4 h-4" />
             {need.need_responses.length} response{need.need_responses.length !== 1 ? 's' : ''}
@@ -155,17 +155,17 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
                 <div key={response.id} className="bg-gray-50 rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-1">
                     <User className="w-3 h-3 text-gray-400" />
-                    <span className="text-xs text-gray-500 font-cute">
+                    <span className="text-xs text-gray-500 text-sm">
                       {formatDate(response.created_at)}
                     </span>
                     {response.is_helping && (
-                      <span className="bg-green-100 text-green-600 px-1.5 py-0.5 rounded text-xs font-cute">
+                      <span className="bg-green-100 text-green-600 px-1.5 py-0.5 rounded text-xs text-sm">
                         Helping
                       </span>
                     )}
                   </div>
                   {response.message && (
-                    <p className="text-sm text-gray-700 font-cute">{response.message}</p>
+                    <p className="text-sm text-gray-700 text-sm">{response.message}</p>
                   )}
                 </div>
               ))}
@@ -183,7 +183,7 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
                 value={responseMessage}
                 onChange={(e) => setResponseMessage(e.target.value)}
                 placeholder="How can you help? (optional)"
-                className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-400 focus:outline-none transition-colors font-cute text-sm resize-none"
+                className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-400 focus:outline-none transition-colors text-sm text-sm resize-none"
                 rows={2}
               />
               <div className="flex gap-2">
@@ -192,7 +192,7 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleHelp}
                   disabled={isHelping}
-                  className="flex-1 bg-primary-500 text-white px-4 py-2 rounded-xl font-cute hover:bg-primary-600 transition-colors shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 bg-primary-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-primary-600 transition-colors shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {isHelping ? (
                     <span>Helping...</span>
@@ -207,7 +207,7 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleFulfill}
-                  className="bg-green-500 text-white px-4 py-2 rounded-xl font-cute hover:bg-green-600 transition-colors shadow-lg flex items-center gap-2"
+                  className="bg-green-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-green-600 transition-colors shadow-lg flex items-center gap-2"
                 >
                   <CheckCircle className="w-4 h-4" />
                   Mark Done
@@ -216,12 +216,12 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
             </div>
           ) : (
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500 font-cute">You&apos;ve responded to this need</span>
+              <span className="text-sm text-gray-500 text-sm">You&apos;ve responded to this need</span>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={handleFulfill}
-                className="bg-green-500 text-white px-4 py-2 rounded-xl font-cute hover:bg-green-600 transition-colors shadow-lg flex items-center gap-2"
+                className="bg-green-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-green-600 transition-colors shadow-lg flex items-center gap-2"
               >
                 <CheckCircle className="w-4 h-4" />
                 Mark Done
@@ -237,7 +237,7 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={handleFulfill}
-            className="w-full bg-green-500 text-white px-4 py-2 rounded-xl font-cute hover:bg-green-600 transition-colors shadow-lg flex items-center justify-center gap-2"
+            className="w-full bg-green-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-green-600 transition-colors shadow-lg flex items-center justify-center gap-2"
           >
             <CheckCircle className="w-4 h-4" />
             Mark as Fulfilled
@@ -246,7 +246,7 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
       )}
 
       {/* Timestamp */}
-      <div className="mt-4 pt-3 border-t text-xs text-gray-400 font-cute">
+      <div className="mt-4 pt-3 border-t text-xs text-gray-400 text-sm">
         Posted {formatDate(need.created_at)}
       </div>
     </motion.div>
