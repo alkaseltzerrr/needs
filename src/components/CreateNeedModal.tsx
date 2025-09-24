@@ -35,7 +35,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
       if (!user) throw new Error('Not authenticated')
 
       // Create the need
-      const { error: needError } = await supabase
+      const { error: needError } = await (supabase as any)
         .from('needs')
         .insert({
           group_id: groupId,
@@ -57,7 +57,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
         urgent: 12
       }[priority]
 
-      await supabase.rpc('update_neediness_level', {
+      await (supabase as any).rpc('update_neediness_level', {
         p_user_id: user.id,
         p_delta: needinessIncrease,
         p_reason: `Posted need: ${title}`
@@ -65,8 +65,8 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
 
       router.refresh()
       onClose()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
@@ -90,7 +90,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
         >
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-display font-semibold text-gray-800">
+            <h2 className="text-2xl font-pixel font-semibold text-gray-800">
               Share Your Need
             </h2>
             <button
@@ -105,14 +105,14 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Title */}
             <div>
-              <label className="block text-sm font-display font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-pixel font-medium text-gray-700 mb-2">
                 What do you need? *
               </label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-400 focus:outline-none transition-colors font-cute"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-400 focus:outline-none transition-colors text-sm"
                 placeholder="I need help with..."
                 required
               />
@@ -120,13 +120,13 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-display font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-pixel font-medium text-gray-700 mb-2">
                 More details (optional)
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-400 focus:outline-none transition-colors font-cute resize-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-400 focus:outline-none transition-colors text-sm resize-none"
                 placeholder="Provide more context about what you need..."
                 rows={3}
               />
@@ -134,7 +134,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-display font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-pixel font-medium text-gray-700 mb-2">
                 Category
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -153,7 +153,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-lg">{value.icon}</span>
-                      <span className="font-cute text-sm">{value.label}</span>
+                      <span className="text-sm text-sm">{value.label}</span>
                     </div>
                   </motion.button>
                 ))}
@@ -162,7 +162,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
 
             {/* Priority */}
             <div>
-              <label className="block text-sm font-display font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-pixel font-medium text-gray-700 mb-2">
                 How urgent is this?
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -181,7 +181,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-sm">{value.icon}</span>
-                      <span className="font-cute text-sm">{value.label}</span>
+                      <span className="text-sm text-sm">{value.label}</span>
                     </div>
                   </motion.button>
                 ))}
@@ -190,7 +190,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
 
             {/* Due Date */}
             <div>
-              <label className="block text-sm font-display font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-pixel font-medium text-gray-700 mb-2">
                 Due date (optional)
               </label>
               <div className="relative">
@@ -199,15 +199,15 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
                   type="datetime-local"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-400 focus:outline-none transition-colors font-cute"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-400 focus:outline-none transition-colors text-sm"
                 />
               </div>
             </div>
 
             {/* Neediness Impact Info */}
             <div className="bg-blue-50 rounded-xl p-4">
-              <p className="text-xs text-blue-600 font-cute mb-2">📊 Neediness Impact</p>
-              <p className="text-sm text-blue-700 font-cute">
+              <p className="text-xs text-blue-600 text-sm mb-2">📊 Neediness Impact</p>
+              <p className="text-sm text-blue-700 text-sm">
                 Posting this {priority} priority need will increase your neediness level by{' '}
                 <strong>
                   +{
@@ -227,7 +227,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm font-cute"
+                className="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm text-sm"
               >
                 {error}
               </motion.div>
@@ -239,7 +239,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading || !title}
-              className="w-full bg-gradient-to-r from-primary-400 to-primary-500 text-white font-display font-medium py-3 px-6 rounded-xl hover:from-primary-500 hover:to-primary-600 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-primary-400 to-primary-500 text-white font-pixel font-medium py-3 px-6 rounded-xl hover:from-primary-500 hover:to-primary-600 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">

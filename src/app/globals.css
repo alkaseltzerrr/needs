@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --background-secondary: rgba(255, 255, 255, 0.95);
+  --background-card: rgba(255, 255, 255, 0.9);
+  --background-sidebar: rgba(255, 255, 255, 0.85);
+  --foreground: #1a1a1a;
+  --foreground-muted: #64748b;
+  --primary: #8b5cf6;
+  --primary-hover: #7c3aed;
+  --primary-foreground: #ffffff;
+  --secondary: #f8fafc;
+  --secondary-foreground: #475569;
+  --accent: #06b6d4;
+  --accent-foreground: #ffffff;
+  --border: rgba(226, 232, 240, 0.6);
+  --shadow: rgba(139, 92, 246, 0.1);
+  --card: rgba(255, 255, 255, 0.9);
+  --purple-gradient: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
+  --revenue-color: #d946ef;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: linear-gradient(135deg, #4c1d95 0%, #581c87 100%);
+    --background-secondary: rgba(30, 30, 30, 0.95);
+    --background-card: rgba(45, 45, 45, 0.9);
+    --background-sidebar: rgba(40, 40, 40, 0.85);
+    --foreground: #f9fafb;
+    --card: rgba(45, 45, 45, 0.9);
+    --border: rgba(75, 85, 99, 0.6);
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Pixelify Sans', 'Inter', sans-serif;
+  min-height: 100vh;
+  backdrop-filter: blur(10px);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #8b5cf6, #a855f7);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #7c3aed, #9333ea);
+}
+
+/* Glassmorphism effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-glass {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.1);
+}
+
+.sidebar-glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px);
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Purple gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #8b5cf6, #d946ef);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Utility classes for animations */
+@keyframes blob {
+  0%, 100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}

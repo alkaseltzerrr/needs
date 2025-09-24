@@ -82,7 +82,7 @@ export default async function GroupPage({ params }: PageProps) {
       group={group}
       needs={needs || []}
       members={members || []}
-      currentUserRole={membership.role as 'admin' | 'member'}
+      currentUserRole={(membership as any)?.role as 'admin' | 'member'}
       currentUserId={user.id}
     />
   )

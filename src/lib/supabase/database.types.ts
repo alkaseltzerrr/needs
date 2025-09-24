@@ -228,7 +228,7 @@ export interface Database {
         }
       }
     }
-    Views: {}
+    Views: Record<string, never>
     Functions: {
       update_neediness_level: {
         Args: {

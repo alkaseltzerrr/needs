@@ -39,7 +39,7 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
       if (!user) throw new Error('Not authenticated')
 
       // Create the group
-      const { data: group, error: groupError } = await supabase
+      const { data: group, error: groupError } = await (supabase as any)
         .from('groups')
         .insert({
           name,
@@ -54,10 +54,10 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
       if (groupError) throw groupError
 
       // Add the creator as an admin member
-      const { error: memberError } = await supabase
+      const { error: memberError } = await (supabase as any)
         .from('group_members')
         .insert({
-          group_id: group.id,
+          group_id: (group as any).id,
           user_id: user.id,
           role: 'admin'
         })
@@ -66,8 +66,8 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
 
       router.refresh()
       onClose()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       setLoading(false)
     }
@@ -91,7 +91,7 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
         >
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-display font-semibold text-gray-800">
+            <h2 className="text-2xl font-pixel font-semibold text-gray-800">
               Create New Group
             </h2>
             <button
@@ -106,14 +106,14 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name */}
             <div>
-              <label className="block text-sm font-display font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-pixel font-medium text-gray-700 mb-2">
                 Group Name
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-400 focus:outline-none transition-colors font-cute"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-400 focus:outline-none transition-colors text-sm"
                 placeholder="My Awesome Group"
                 required
               />
@@ -121,13 +121,13 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-display font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-pixel font-medium text-gray-700 mb-2">
                 Description (optional)
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-400 focus:outline-none transition-colors font-cute resize-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-primary-400 focus:outline-none transition-colors text-sm resize-none"
                 placeholder="What's this group about?"
                 rows={3}
               />
@@ -135,7 +135,7 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
 
             {/* Icon Selection */}
             <div>
-              <label className="block text-sm font-display font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-pixel font-medium text-gray-700 mb-2">
                 Choose an Icon
               </label>
               <div className="grid grid-cols-5 gap-2">
@@ -160,7 +160,7 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
 
             {/* Color Selection */}
             <div>
-              <label className="block text-sm font-display font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-pixel font-medium text-gray-700 mb-2">
                 Choose a Color
               </label>
               <div className="flex flex-wrap gap-2">
@@ -184,7 +184,7 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
 
             {/* Preview */}
             <div className="bg-gray-50 rounded-xl p-4">
-              <p className="text-xs text-gray-500 font-cute mb-2">Preview</p>
+              <p className="text-xs text-gray-500 text-sm mb-2">Preview</p>
               <div className="flex items-center gap-3">
                 <div
                   className="w-12 h-12 rounded-xl flex items-center justify-center text-xl"
@@ -193,11 +193,11 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
                   {selectedIcon}
                 </div>
                 <div>
-                  <h3 className="font-display font-semibold text-gray-800">
+                  <h3 className="font-pixel font-semibold text-gray-800">
                     {name || 'Group Name'}
                   </h3>
                   {description && (
-                    <p className="text-sm text-gray-600 font-cute">
+                    <p className="text-sm text-gray-600 text-sm">
                       {description}
                     </p>
                   )}
@@ -209,7 +209,7 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm font-cute"
+                className="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm text-sm"
               >
                 {error}
               </motion.div>
@@ -221,7 +221,7 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={loading || !name}
-              className="w-full bg-gradient-to-r from-primary-400 to-primary-500 text-white font-display font-medium py-3 px-6 rounded-xl hover:from-primary-500 hover:to-primary-600 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-primary-400 to-primary-500 text-white font-pixel font-medium py-3 px-6 rounded-xl hover:from-primary-500 hover:to-primary-600 transition-all duration-200 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">

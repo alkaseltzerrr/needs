@@ -80,10 +80,10 @@ export default function NeedinessIndicator({
       
       {showLabel && (
         <div className="mt-2 text-center">
-          <p className={`font-display font-medium ${needinessLevel.color}`}>
+          <p className={`font-pixel font-medium ${needinessLevel.color}`}>
             {needinessLevel.label}
           </p>
-          <p className="text-xs text-gray-500 font-cute">{level}% needy</p>
+          <p className="text-xs text-gray-500 text-sm">{level}% needy</p>
         </div>
       )}
     </motion.div>
