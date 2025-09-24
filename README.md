@@ -117,4 +117,4 @@ needs/
 
 ---
 
-Made with 💖 for the Needs Community
+Made with 💖 by your favorite CS x IT couple
