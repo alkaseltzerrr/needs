@@ -1,6 +1,6 @@
 # 🤗 Needs - Share Your Needs with People Who Care
 
-A cute, light-hearted application that allows you to group up with people to publicly post your "needs" for them to notice. Whether it's a simple task like groceries, a genuine talk, or a food craving together - Needs helps you connect with your caring community!
+A cute, light-hearted application that allows you to group up with people to publicly post your "needs" for them to notice. Whether it's a simple task like groceries, a genuine talk, or a food craving together. Needs helps you connect with your caring community!
 
 ## ✨ Features
 
