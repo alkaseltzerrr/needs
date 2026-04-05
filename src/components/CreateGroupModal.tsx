@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Sparkles } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { toUserFacingError } from '@/lib/utils'
 
 interface CreateGroupModalProps {
   onClose: () => void
@@ -47,7 +48,7 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
       router.refresh()
       onClose()
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      setError(toUserFacingError(err, 'Unable to create the group right now. Please try again.'))
     } finally {
       setLoading(false)
     }

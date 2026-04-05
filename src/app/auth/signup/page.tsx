@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { toUserFacingError } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import { Heart, Mail, Lock, User, Sparkles } from 'lucide-react'
 
@@ -46,7 +47,7 @@ export default function SignupPage() {
         setPassword('')
       }
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
+      setError(toUserFacingError(error, 'Unable to create your account right now. Please try again.'))
     } finally {
       setLoading(false)
     }

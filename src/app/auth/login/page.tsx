@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { toUserFacingError } from '@/lib/utils'
 import { motion } from 'framer-motion'
 import { Heart, Mail, Lock, Sparkles } from 'lucide-react'
 
@@ -31,7 +32,7 @@ export default function LoginPage() {
       router.push('/dashboard')
       router.refresh()
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
+      setError(toUserFacingError(error, 'Unable to log in right now. Please try again.'))
     } finally {
       setLoading(false)
     }
