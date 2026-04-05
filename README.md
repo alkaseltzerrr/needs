@@ -70,30 +70,36 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ```
 needs/
-├── app/
-│   ├── auth/
-│   │   ├── login/         # Login page
-│   │   └── signup/        # Signup page
-│   ├── dashboard/         # Main dashboard
-│   ├── groups/
-│   │   └── [id]/         # Group detail & needs board
-│   └── globals.css       # Global styles
-├── components/
-│   ├── DashboardContent.tsx    # Dashboard UI
-│   ├── GroupCard.tsx           # Group display card
-│   ├── GroupNeedsBoard.tsx     # Needs board for groups
-│   ├── NeedinessIndicator.tsx  # Neediness level display
-│   ├── CreateGroupModal.tsx    # Modal for creating groups
-│   └── ...                     # Other components
-├── lib/
-│   ├── supabase/
-│   │   ├── client.ts          # Supabase client config
-│   │   ├── server.ts          # Supabase server config
-│   │   └── database.types.ts  # TypeScript types
-│   └── utils.ts               # Utility functions
+├── src/
+│   ├── app/
+│   │   ├── auth/
+│   │   │   ├── login/         # Login page
+│   │   │   └── signup/        # Signup page
+│   │   ├── analytics/         # Basic analytics view
+│   │   ├── dashboard/         # Main dashboard
+│   │   ├── groups/
+│   │   │   ├── [id]/          # Group detail & needs board
+│   │   │   └── page.tsx       # Group list page
+│   │   ├── settings/          # Profile/settings snapshot
+│   │   ├── globals.css        # Global styles
+│   │   ├── layout.tsx         # App layout shell
+│   │   └── page.tsx           # Root redirect
+│   ├── components/
+│   │   ├── DashboardContent.tsx    # Dashboard UI
+│   │   ├── GroupCard.tsx           # Group display card
+│   │   ├── GroupNeedsBoard.tsx     # Needs board for groups
+│   │   ├── NeedinessIndicator.tsx  # Neediness level display
+│   │   ├── CreateGroupModal.tsx    # Modal for creating groups
+│   │   └── ...                     # Other components
+│   └── lib/
+│       ├── supabase/
+│       │   ├── client.ts           # Supabase browser client
+│       │   ├── server.ts           # Supabase server client
+│       │   └── database.types.ts   # TypeScript database types
+│       └── utils.ts                # Utility functions
 ├── supabase/
-│   └── schema.sql            # Database schema
-└── middleware.ts             # Auth middleware
+│   └── schema.sql                  # Database schema
+└── middleware.ts                   # Auth middleware
 ```
 
 ## 🎮 How to Use
