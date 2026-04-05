@@ -20,6 +20,7 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
   const [isHelping, setIsHelping] = useState(false)
   const [showResponses, setShowResponses] = useState(false)
   const [responseMessage, setResponseMessage] = useState('')
+  const [actionError, setActionError] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
@@ -29,6 +30,7 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
 
   const handleHelp = async () => {
     setIsHelping(true)
+    setActionError(null)
     try {
       // Add response
       const { error } = await (supabase as any)
@@ -58,14 +60,20 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
 
       setResponseMessage('')
       router.refresh()
-    } catch (error) {
-      console.error('Error helping:', error)
+    } catch {
+      setActionError('Unable to send your response right now. Please try again.')
     } finally {
       setIsHelping(false)
     }
   }
 
   const handleFulfill = async () => {
+    if (!isOwner) {
+      setActionError('Only the person who posted this need can mark it as fulfilled.')
+      return
+    }
+
+    setActionError(null)
     try {
       const { error } = await (supabase as any)
         .from('needs')
@@ -79,8 +87,8 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
       if (error) throw error
 
       router.refresh()
-    } catch (error) {
-      console.error('Error fulfilling need:', error)
+    } catch {
+      setActionError('Unable to mark this need as fulfilled. Please try again.')
     }
   }
 
@@ -186,46 +194,32 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
                 className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-400 focus:outline-none transition-colors text-sm text-sm resize-none"
                 rows={2}
               />
-              <div className="flex gap-2">
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleHelp}
-                  disabled={isHelping}
-                  className="flex-1 bg-primary-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-primary-600 transition-colors shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
-                >
-                  {isHelping ? (
-                    <span>Helping...</span>
-                  ) : (
-                    <>
-                      <Heart className="w-4 h-4" />
-                      I can help!
-                    </>
-                  )}
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={handleFulfill}
-                  className="bg-green-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-green-600 transition-colors shadow-lg flex items-center gap-2"
-                >
-                  <CheckCircle className="w-4 h-4" />
-                  Mark Done
-                </motion.button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500 text-sm">You&apos;ve responded to this need</span>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={handleFulfill}
-                className="bg-green-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-green-600 transition-colors shadow-lg flex items-center gap-2"
+                onClick={handleHelp}
+                disabled={isHelping}
+                className="w-full bg-primary-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-primary-600 transition-colors shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                <CheckCircle className="w-4 h-4" />
-                Mark Done
+                {isHelping ? (
+                  <span>Helping...</span>
+                ) : (
+                  <>
+                    <Heart className="w-4 h-4" />
+                    I can help!
+                  </>
+                )}
               </motion.button>
+              <p className="text-xs text-gray-500 text-sm">
+                Only the person who posted this need can mark it as fulfilled.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              <span className="text-sm text-gray-500 text-sm">You&apos;ve responded to this need.</span>
+              <p className="text-xs text-gray-500 text-sm">
+                The need owner will mark this as fulfilled when completed.
+              </p>
             </div>
           )}
         </div>
@@ -242,6 +236,12 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
             <CheckCircle className="w-4 h-4" />
             Mark as Fulfilled
           </motion.button>
+        </div>
+      )}
+
+      {actionError && (
+        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">
+          {actionError}
         </div>
       )}
 
