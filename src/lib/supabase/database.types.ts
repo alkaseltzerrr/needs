@@ -248,6 +248,21 @@ export interface Database {
           updated_at: string
         }
       }
+      respond_to_need_and_update_neediness: {
+        Args: {
+          p_need_id: string
+          p_message?: string | null
+          p_is_helping?: boolean
+        }
+        Returns: {
+          id: string
+          need_id: string
+          user_id: string
+          message: string | null
+          is_helping: boolean
+          created_at: string
+        }
+      }
       update_neediness_level: {
         Args: {
           p_user_id: string

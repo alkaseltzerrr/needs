@@ -32,31 +32,13 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
     setIsHelping(true)
     setActionError(null)
     try {
-      // Add response
-      const { error } = await supabase
-        .from('need_responses')
-        .insert({
-          need_id: need.id,
-          user_id: currentUserId,
-          message: responseMessage,
-          is_helping: true
-        })
+      const { error } = await supabase.rpc('respond_to_need_and_update_neediness', {
+        p_need_id: need.id,
+        p_message: responseMessage || null,
+        p_is_helping: true,
+      })
 
       if (error) throw error
-
-      // Update neediness level of need creator (decrease by 5)
-      await supabase.rpc('update_neediness_level', {
-        p_user_id: need.created_by,
-        p_delta: -5,
-        p_reason: `Help received for: ${need.title}`
-      })
-
-      // Increase helper's neediness by 2 (helping others makes you a bit needier for reciprocation)
-      await supabase.rpc('update_neediness_level', {
-        p_user_id: currentUserId,
-        p_delta: 2,
-        p_reason: `Helped with: ${need.title}`
-      })
 
       setResponseMessage('')
       router.refresh()
