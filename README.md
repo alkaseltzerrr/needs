@@ -7,7 +7,7 @@ A cute, light-hearted application that allows you to group up with people to pub
 - **Group Management**: Create and join groups with friends, family, or communities
 - **Needs Board**: Post your needs with categories, priorities, and descriptions
 - **Neediness Tracking**: Fun emoji-based system to track how "needy" you are (0-100 scale)
-- **Real-time Updates**: See when someone responds to or fulfills your needs
+- **Fast Refresh Updates**: See latest responses and fulfilled needs after page refresh/navigation
 - **Cute Animations**: Delightful pixelated fonts and pulsing animations throughout
 - **Responsive Design**: Works beautifully on desktop and mobile devices
 
@@ -22,7 +22,7 @@ A cute, light-hearted application that allows you to group up with people to pub
 ## 🚀 Tech Stack
 
 - **Frontend**: Next.js 15, TypeScript, TailwindCSS
-- **Backend**: Supabase (PostgreSQL, Auth, Real-time)
+- **Backend**: Supabase (PostgreSQL, Auth)
 - **Animations**: Framer Motion
 - **Icons**: Lucide React
 - **Fonts**: Google Fonts (Press Start 2P, Comfortaa, Fredoka)
