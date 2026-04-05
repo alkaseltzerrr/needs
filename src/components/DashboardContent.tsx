@@ -37,10 +37,10 @@ export default function DashboardContent({ profile, groups }: DashboardContentPr
 
   return (
     <div className="min-h-screen bg-gradient-purple">
-      <div className="flex">
+      <div className="flex min-h-screen">
         {/* Sidebar */}
-        <aside className="w-64 h-screen sticky top-0 sidebar-glass">
-          <div className="p-6">
+        <aside className="sidebar-glass hidden lg:sticky lg:top-0 lg:block lg:h-screen lg:w-64">
+          <div className="relative h-full p-6">
             {/* Logo */}
             <div className="flex items-center gap-3 mb-8">
               <div className="w-10 h-10 bg-gradient-purple-light rounded-lg flex items-center justify-center">
@@ -112,34 +112,50 @@ export default function DashboardContent({ profile, groups }: DashboardContentPr
         <main className="flex-1 overflow-auto">
           {/* Header */}
           <header className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-40">
-            <div className="px-6 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
+            <div className="px-4 py-4 sm:px-6">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-2 sm:gap-4">
                   <span className="text-sm text-gray-600">Groups / </span>
                   <span className="text-sm font-medium text-gray-900">Analytics</span>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="relative">
+                  <div className="relative hidden sm:block">
                     <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     <input
                       type="text"
+                      aria-label="Search dashboard"
                       placeholder="Search"
                       className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                     />
-                    <kbd className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">⌘K</kbd>
+                    <kbd className="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">Ctrl/Cmd+K</kbd>
                   </div>
                   
-                  <button className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                  <button aria-label="Open notifications" className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
                     <Bell className="w-5 h-5 text-gray-600" />
                     <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
                   </button>
                 </div>
               </div>
+
+              <nav className="mt-3 flex gap-2 overflow-x-auto lg:hidden" aria-label="Mobile dashboard navigation">
+                <Link href="/dashboard" className="shrink-0 rounded-lg bg-primary-100 px-3 py-1.5 text-sm text-primary-700">
+                  Dashboard
+                </Link>
+                <Link href="/groups" className="shrink-0 rounded-lg bg-white px-3 py-1.5 text-sm text-gray-700 border border-gray-200">
+                  Groups
+                </Link>
+                <Link href="/analytics" className="shrink-0 rounded-lg bg-white px-3 py-1.5 text-sm text-gray-700 border border-gray-200">
+                  Analytics
+                </Link>
+                <Link href="/settings" className="shrink-0 rounded-lg bg-white px-3 py-1.5 text-sm text-gray-700 border border-gray-200">
+                  Settings
+                </Link>
+              </nav>
             </div>
           </header>
 
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {/* Revenue Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -153,7 +169,7 @@ export default function DashboardContent({ profile, groups }: DashboardContentPr
                 $90,239.00
               </div>
 
-              <div className="flex items-center gap-2 mb-6">
+              <div className="mb-6 flex flex-wrap items-center gap-2">
                 <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors">
                   <Calendar className="w-4 h-4" />
                   Select Dates
@@ -212,7 +228,7 @@ export default function DashboardContent({ profile, groups }: DashboardContentPr
 
             {/* Groups Section */}
             <div>
-              <div className="flex items-center justify-between mb-6">
+              <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h3 className="text-xl font-pixel font-bold text-gray-900">Recent campaigns</h3>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
