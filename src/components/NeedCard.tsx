@@ -33,7 +33,7 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
     setActionError(null)
     try {
       // Add response
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('need_responses')
         .insert({
           need_id: need.id,
@@ -45,14 +45,14 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
       if (error) throw error
 
       // Update neediness level of need creator (decrease by 5)
-      await (supabase as any).rpc('update_neediness_level', {
+      await supabase.rpc('update_neediness_level', {
         p_user_id: need.created_by,
         p_delta: -5,
         p_reason: `Help received for: ${need.title}`
       })
 
       // Increase helper's neediness by 2 (helping others makes you a bit needier for reciprocation)
-      await (supabase as any).rpc('update_neediness_level', {
+      await supabase.rpc('update_neediness_level', {
         p_user_id: currentUserId,
         p_delta: 2,
         p_reason: `Helped with: ${need.title}`
@@ -75,7 +75,7 @@ export default function NeedCard({ need, currentUserId }: NeedCardProps) {
 
     setActionError(null)
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('needs')
         .update({
           is_fulfilled: true,
