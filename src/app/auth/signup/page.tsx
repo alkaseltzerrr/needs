@@ -14,6 +14,7 @@ export default function SignupPage() {
   const [displayName, setDisplayName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
@@ -21,6 +22,7 @@ export default function SignupPage() {
     e.preventDefault()
     setLoading(true)
     setError(null)
+    setSuccessMessage(null)
 
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -36,9 +38,12 @@ export default function SignupPage() {
 
       if (error) throw error
 
-      if (data.user) {
+      if (data.session) {
         router.push('/dashboard')
         router.refresh()
+      } else if (data.user) {
+        setSuccessMessage('Account created. Check your email to confirm your account, then log in.')
+        setPassword('')
       }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
@@ -157,6 +162,16 @@ export default function SignupPage() {
                 className="bg-red-50/80 text-red-600 px-4 py-3 rounded-lg text-sm border border-red-200/50 backdrop-blur-sm font-pixel"
               >
                 {error}
+              </motion.div>
+            )}
+
+            {successMessage && (
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="bg-green-50/80 text-green-700 px-4 py-3 rounded-lg text-sm border border-green-200/50 backdrop-blur-sm font-pixel"
+              >
+                {successMessage}
               </motion.div>
             )}
 
