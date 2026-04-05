@@ -37,19 +37,6 @@ export default function SignupPage() {
       if (error) throw error
 
       if (data.user) {
-        // Create profile
-        const { error: profileError } = await (supabase as any)
-          .from('profiles')
-          .insert({
-            id: data.user.id,
-            username,
-            display_name: displayName || username,
-          })
-
-        if (profileError && profileError.code !== '23505') {
-          throw profileError
-        }
-
         router.push('/dashboard')
         router.refresh()
       }
