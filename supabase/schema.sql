@@ -165,6 +165,93 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Function to atomically respond to a need and update both users' neediness
+CREATE OR REPLACE FUNCTION public.respond_to_need_and_update_neediness(
+    p_need_id UUID,
+    p_message TEXT DEFAULT NULL,
+    p_is_helping BOOLEAN DEFAULT TRUE
+)
+RETURNS public.need_responses
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+    v_user_id UUID;
+    v_need public.needs;
+    v_response public.need_responses;
+BEGIN
+    v_user_id := auth.uid();
+
+    IF v_user_id IS NULL THEN
+        RAISE EXCEPTION 'Not authenticated';
+    END IF;
+
+    SELECT * INTO v_need
+    FROM public.needs
+    WHERE id = p_need_id;
+
+    IF v_need.id IS NULL THEN
+        RAISE EXCEPTION 'Need not found';
+    END IF;
+
+    IF v_need.is_fulfilled THEN
+        RAISE EXCEPTION 'Need already fulfilled';
+    END IF;
+
+    IF v_need.created_by = v_user_id THEN
+        RAISE EXCEPTION 'Need owner cannot respond as helper';
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM public.group_members gm
+        WHERE gm.group_id = v_need.group_id
+        AND gm.user_id = v_user_id
+    ) THEN
+        RAISE EXCEPTION 'Not a group member';
+    END IF;
+
+    IF EXISTS (
+        SELECT 1
+        FROM public.need_responses nr
+        WHERE nr.need_id = p_need_id
+        AND nr.user_id = v_user_id
+        AND nr.is_helping = TRUE
+    ) THEN
+        RAISE EXCEPTION 'Already responded to this need';
+    END IF;
+
+    INSERT INTO public.need_responses (need_id, user_id, message, is_helping)
+    VALUES (
+        p_need_id,
+        v_user_id,
+        NULLIF(TRIM(p_message), ''),
+        COALESCE(p_is_helping, TRUE)
+    )
+    RETURNING * INTO v_response;
+
+    IF COALESCE(p_is_helping, TRUE) THEN
+        PERFORM public.update_neediness_level(
+            v_need.created_by,
+            -5,
+            'Help received for: ' || v_need.title
+        );
+
+        PERFORM public.update_neediness_level(
+            v_user_id,
+            2,
+            'Helped with: ' || v_need.title
+        );
+    END IF;
+
+    RETURN v_response;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.respond_to_need_and_update_neediness(UUID, TEXT, BOOLEAN) FROM public;
+GRANT EXECUTE ON FUNCTION public.respond_to_need_and_update_neediness(UUID, TEXT, BOOLEAN) TO authenticated;
+
 -- Function to atomically create a group and add creator as admin member
 CREATE OR REPLACE FUNCTION public.create_group_with_admin_member(
     p_name TEXT,
