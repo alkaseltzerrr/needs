@@ -165,6 +165,49 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Function to atomically create a group and add creator as admin member
+CREATE OR REPLACE FUNCTION public.create_group_with_admin_member(
+    p_name TEXT,
+    p_description TEXT DEFAULT NULL,
+    p_color TEXT DEFAULT '#FF6B6B',
+    p_icon TEXT DEFAULT '🏠'
+)
+RETURNS public.groups
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+    v_user_id UUID;
+    v_group public.groups;
+BEGIN
+    v_user_id := auth.uid();
+
+    IF v_user_id IS NULL THEN
+        RAISE EXCEPTION 'Not authenticated';
+    END IF;
+
+    INSERT INTO public.groups (name, description, color, icon, created_by)
+    VALUES (
+        p_name,
+        NULLIF(TRIM(p_description), ''),
+        COALESCE(p_color, '#FF6B6B'),
+        COALESCE(p_icon, '🏠'),
+        v_user_id
+    )
+    RETURNING * INTO v_group;
+
+    INSERT INTO public.group_members (group_id, user_id, role)
+    VALUES (v_group.id, v_user_id, 'admin')
+    ON CONFLICT (group_id, user_id) DO NOTHING;
+
+    RETURN v_group;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.create_group_with_admin_member(TEXT, TEXT, TEXT, TEXT) FROM public;
+GRANT EXECUTE ON FUNCTION public.create_group_with_admin_member(TEXT, TEXT, TEXT, TEXT) TO authenticated;
+
 -- RLS Policies
 
 -- Enable RLS

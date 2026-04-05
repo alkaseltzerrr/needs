@@ -230,6 +230,24 @@ export interface Database {
     }
     Views: Record<string, never>
     Functions: {
+      create_group_with_admin_member: {
+        Args: {
+          p_name: string
+          p_description?: string | null
+          p_color?: string | null
+          p_icon?: string | null
+        }
+        Returns: {
+          id: string
+          name: string
+          description: string | null
+          color: string
+          icon: string
+          created_by: string
+          created_at: string
+          updated_at: string
+        }
+      }
       update_neediness_level: {
         Args: {
           p_user_id: string

@@ -35,34 +35,14 @@ export default function CreateGroupModal({ onClose }: CreateGroupModalProps) {
     setError(null)
 
     try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Not authenticated')
-
-      // Create the group
-      const { data: group, error: groupError } = await (supabase as any)
-        .from('groups')
-        .insert({
-          name,
-          description,
-          icon: selectedIcon,
-          color: selectedColor,
-          created_by: user.id
-        })
-        .select()
-        .single()
+      const { error: groupError } = await supabase.rpc('create_group_with_admin_member', {
+        p_name: name.trim(),
+        p_description: description.trim() || null,
+        p_color: selectedColor,
+        p_icon: selectedIcon,
+      })
 
       if (groupError) throw groupError
-
-      // Add the creator as an admin member
-      const { error: memberError } = await (supabase as any)
-        .from('group_members')
-        .insert({
-          group_id: (group as any).id,
-          user_id: user.id,
-          role: 'admin'
-        })
-
-      if (memberError) throw memberError
 
       router.refresh()
       onClose()
