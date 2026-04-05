@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import GroupNeedsBoard from '@/components/GroupNeedsBoard'
+import type { GroupMember } from '@/lib/supabase/database.types'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -82,7 +83,7 @@ export default async function GroupPage({ params }: PageProps) {
       group={group}
       needs={needs || []}
       members={members || []}
-      currentUserRole={(membership as any)?.role as 'admin' | 'member'}
+      currentUserRole={membership.role as GroupMember['role']}
       currentUserId={user.id}
     />
   )
