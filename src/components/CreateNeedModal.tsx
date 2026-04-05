@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Sparkles, Calendar } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
-import { NEED_CATEGORIES, NEED_PRIORITIES } from '@/lib/utils'
+import { NEED_CATEGORIES, NEED_PRIORITIES, toUserFacingError } from '@/lib/utils'
 import type { NeedCategory, NeedPriority } from '@/lib/supabase/database.types'
 
 interface CreateNeedModalProps {
@@ -66,7 +66,7 @@ export default function CreateNeedModal({ groupId, onClose }: CreateNeedModalPro
       router.refresh()
       onClose()
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'An error occurred')
+      setError(toUserFacingError(err, 'Unable to share your need right now. Please try again.'))
     } finally {
       setLoading(false)
     }

@@ -68,3 +68,40 @@ export const CUTE_MESSAGES = [
 export function getRandomCuteMessage() {
   return CUTE_MESSAGES[Math.floor(Math.random() * CUTE_MESSAGES.length)]
 }
+
+export function toUserFacingError(
+  error: unknown,
+  fallback = 'Something went wrong. Please try again.'
+) {
+  if (!(error instanceof Error) || !error.message) {
+    return fallback
+  }
+
+  const message = error.message.toLowerCase()
+
+  if (message.includes('invalid login credentials')) {
+    return 'Incorrect email or password.'
+  }
+
+  if (message.includes('email not confirmed')) {
+    return 'Please confirm your email before logging in.'
+  }
+
+  if (message.includes('user already registered')) {
+    return 'An account with this email already exists.'
+  }
+
+  if (message.includes('password should be at least')) {
+    return 'Password is too short.'
+  }
+
+  if (message.includes('rate limit')) {
+    return 'Too many attempts. Please wait a moment and try again.'
+  }
+
+  if (message.includes('not authenticated')) {
+    return 'Your session has expired. Please log in again.'
+  }
+
+  return fallback
+}
