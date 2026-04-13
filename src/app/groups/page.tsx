@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import GroupCard from '@/components/GroupCard'
 
 type GroupMembership = {
   group_id: string
@@ -13,6 +14,18 @@ type GroupMembership = {
     color: string
     created_at: string
   } | null
+}
+
+type GroupNeed = {
+  id: string
+  group_id: string
+  is_fulfilled: boolean
+  priority: 'low' | 'medium' | 'high' | 'urgent'
+  created_at: string
+}
+
+type GroupMemberRow = {
+  group_id: string
 }
 
 export default async function GroupsPage() {
@@ -47,6 +60,70 @@ export default async function GroupsPage() {
     .order('joined_at', { ascending: false })
 
   const groups = (memberships ?? []) as GroupMembership[]
+  const groupIds = groups.map((membership) => membership.group_id)
+
+  let needs: GroupNeed[] = []
+  let memberRows: GroupMemberRow[] = []
+
+  if (groupIds.length > 0) {
+    const [{ data: needsData }, { data: membersData }] = await Promise.all([
+      supabase
+        .from('needs')
+        .select('id, group_id, is_fulfilled, priority, created_at')
+        .in('group_id', groupIds)
+        .order('created_at', { ascending: false })
+        .limit(500),
+      supabase
+        .from('group_members')
+        .select('group_id')
+        .in('group_id', groupIds),
+    ])
+
+    needs = (needsData ?? []) as GroupNeed[]
+    memberRows = (membersData ?? []) as GroupMemberRow[]
+  }
+
+  const statsByGroup = groupIds.reduce<
+    Record<
+      string,
+      {
+        openNeedsCount: number
+        urgentNeedsCount: number
+        memberCount: number
+        lastActivityAt: string | null
+      }
+    >
+  >((acc, groupId) => {
+    acc[groupId] = {
+      openNeedsCount: 0,
+      urgentNeedsCount: 0,
+      memberCount: 0,
+      lastActivityAt: null,
+    }
+    return acc
+  }, {})
+
+  for (const need of needs) {
+    const groupStats = statsByGroup[need.group_id]
+    if (!groupStats) continue
+
+    if (!need.is_fulfilled) {
+      groupStats.openNeedsCount += 1
+      if (need.priority === 'urgent') {
+        groupStats.urgentNeedsCount += 1
+      }
+    }
+
+    if (!groupStats.lastActivityAt || new Date(need.created_at) > new Date(groupStats.lastActivityAt)) {
+      groupStats.lastActivityAt = need.created_at
+    }
+  }
+
+  for (const memberRow of memberRows) {
+    const groupStats = statsByGroup[memberRow.group_id]
+    if (!groupStats) continue
+    groupStats.memberCount += 1
+  }
 
   return (
     <main className="min-h-screen bg-gradient-purple p-6 md:p-10">
@@ -78,31 +155,23 @@ export default async function GroupsPage() {
             {groups.map((membership) => {
               if (!membership.groups) return null
 
-              return (
-                <Link
-                  key={membership.group_id}
-                  href={`/groups/${membership.groups.id}`}
-                  className="card-glass rounded-2xl p-5 transition-transform hover:-translate-y-0.5"
-                >
-                  <div className="mb-3 flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="flex h-11 w-11 items-center justify-center rounded-xl text-xl"
-                        style={{ backgroundColor: `${membership.groups.color}22` }}
-                      >
-                        {membership.groups.icon}
-                      </div>
-                      <div>
-                        <h2 className="font-pixel text-lg text-gray-800">{membership.groups.name}</h2>
-                        <p className="text-xs uppercase tracking-wide text-gray-500">{membership.role}</p>
-                      </div>
-                    </div>
-                  </div>
+              const stats = statsByGroup[membership.group_id] || {
+                openNeedsCount: 0,
+                urgentNeedsCount: 0,
+                memberCount: 0,
+                lastActivityAt: null,
+              }
 
-                  {membership.groups.description && (
-                    <p className="text-sm text-gray-600">{membership.groups.description}</p>
-                  )}
-                </Link>
+              return (
+                <GroupCard
+                  key={membership.group_id}
+                  group={membership.groups}
+                  role={membership.role}
+                  openNeedsCount={stats.openNeedsCount}
+                  urgentNeedsCount={stats.urgentNeedsCount}
+                  memberCount={stats.memberCount}
+                  lastActivityAt={stats.lastActivityAt}
+                />
               )
             })}
           </section>
