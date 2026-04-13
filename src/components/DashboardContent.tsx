@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Users, Heart, Bell, LogOut, Settings, TrendingUp, AlertTriangle, CheckCircle2, ArrowUpRight } from 'lucide-react'
+import { Plus, Users, Heart, Bell, LogOut, Settings, TrendingUp, AlertTriangle, CheckCircle2, ArrowUpRight, Search, Command } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
@@ -51,6 +51,8 @@ export default function DashboardContent({
   currentUserId,
 }: DashboardContentProps) {
   const [showCreateGroup, setShowCreateGroup] = useState(false)
+  const [showSearch, setShowSearch] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const router = useRouter()
   const supabase = createClient()
 
@@ -76,6 +78,74 @@ export default function DashboardContent({
     acc[need.group_id] = (acc[need.group_id] || 0) + 1
     return acc
   }, {})
+
+  const searchResults = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
+    if (!query) return []
+
+    const groupResults = groups
+      .filter((membership) => membership.groups)
+      .map((membership) => {
+        const group = membership.groups!
+        return {
+          id: `group-${membership.group_id}`,
+          kind: 'group' as const,
+          title: group.name,
+          subtitle: group.description || `${membership.role} group`,
+          href: `/groups/${membership.group_id}`,
+          priority: null,
+        }
+      })
+      .filter((item) =>
+        `${item.title} ${item.subtitle}`.toLowerCase().includes(query)
+      )
+
+    const needResults = openNeeds
+      .map((need) => ({
+        id: `need-${need.id}`,
+        kind: 'need' as const,
+        title: need.title,
+        subtitle: `${need.groups?.name || 'Group'} • ${need.profiles?.display_name || need.profiles?.username || 'Member'}`,
+        href: `/groups/${need.group_id}`,
+        priority: need.priority,
+      }))
+      .filter((item) =>
+        `${item.title} ${item.subtitle}`.toLowerCase().includes(query)
+      )
+
+    return [...needResults, ...groupResults].slice(0, 10)
+  }, [groups, openNeeds, searchQuery])
+
+  const handleOpenSearch = () => {
+    setShowSearch(true)
+  }
+
+  const handleCloseSearch = () => {
+    setShowSearch(false)
+    setSearchQuery('')
+  }
+
+  const handleSelectSearchResult = (href: string) => {
+    handleCloseSearch()
+    router.push(href)
+  }
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const isMetaShortcut = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k'
+      if (isMetaShortcut) {
+        event.preventDefault()
+        setShowSearch(true)
+      }
+
+      if (event.key === 'Escape') {
+        setShowSearch(false)
+      }
+    }
+
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
 
   return (
     <div className="min-h-screen bg-gradient-purple">
@@ -145,6 +215,18 @@ export default function DashboardContent({
                 </div>
 
                 <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleOpenSearch}
+                    className="hidden sm:inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                  >
+                    <Search className="h-4 w-4" />
+                    Search
+                    <span className="inline-flex items-center gap-1 rounded border border-gray-200 bg-gray-50 px-1.5 py-0.5 text-xs text-gray-500">
+                      <Command className="h-3 w-3" />K
+                    </span>
+                  </button>
+
                   <button aria-label="Open notifications" className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors">
                     <Bell className="w-5 h-5 text-gray-600" />
                     <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -153,6 +235,13 @@ export default function DashboardContent({
               </div>
 
               <nav className="mt-3 flex gap-2 overflow-x-auto lg:hidden" aria-label="Mobile dashboard navigation">
+                <button
+                  type="button"
+                  onClick={handleOpenSearch}
+                  className="shrink-0 rounded-lg bg-white px-3 py-1.5 text-sm text-gray-700 border border-gray-200"
+                >
+                  Search
+                </button>
                 <Link href="/dashboard" className="shrink-0 rounded-lg bg-primary-100 px-3 py-1.5 text-sm text-primary-700">
                   Dashboard
                 </Link>
@@ -358,6 +447,67 @@ export default function DashboardContent({
       {/* Create Group Modal */}
       {showCreateGroup && (
         <CreateGroupModal onClose={() => setShowCreateGroup(false)} />
+      )}
+
+      {showSearch && (
+        <div
+          className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 p-4 pt-20"
+          onClick={handleCloseSearch}
+        >
+          <div
+            className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="border-b border-gray-100 p-4">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                <input
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' && searchResults.length > 0) {
+                      event.preventDefault()
+                      handleSelectSearchResult(searchResults[0].href)
+                    }
+                  }}
+                  placeholder="Search groups or open needs"
+                  className="w-full rounded-xl border border-gray-200 py-3 pl-10 pr-4 text-sm text-gray-800 outline-none focus:border-primary-400"
+                />
+              </div>
+            </div>
+
+            <div className="max-h-[55vh] overflow-y-auto p-3">
+              {searchQuery.trim() === '' ? (
+                <p className="px-2 py-3 text-sm text-gray-500">Type to search. Press Enter to open first result.</p>
+              ) : searchResults.length === 0 ? (
+                <p className="px-2 py-3 text-sm text-gray-500">No matches for "{searchQuery}".</p>
+              ) : (
+                <div className="space-y-1">
+                  {searchResults.map((result) => (
+                    <button
+                      key={result.id}
+                      type="button"
+                      onClick={() => handleSelectSearchResult(result.href)}
+                      className="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left transition-colors hover:bg-gray-50"
+                    >
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-medium text-gray-900">{result.title}</p>
+                        <p className="truncate text-xs text-gray-500">{result.kind} • {result.subtitle}</p>
+                      </div>
+
+                      {result.priority && (
+                        <span className={`ml-3 shrink-0 rounded-md px-2 py-0.5 text-xs ${NEED_PRIORITIES[result.priority].color}`}>
+                          {NEED_PRIORITIES[result.priority].label}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
